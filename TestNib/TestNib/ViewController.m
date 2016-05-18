@@ -22,6 +22,7 @@
     UIView *view = [[nib instantiateWithOwner:self options:nil] firstObject];
     
     [self.view addSubview:view];
+    view.frame = self.view.bounds;
     // Do any additional setup after loading the view, typically from a nib.
 }
 

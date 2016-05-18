@@ -87,6 +87,8 @@ int AAFixedByteLengthForType(unsigned char type)
     NSInteger savedByKeyMask; //264
 }
 
+@synthesize delegate = delegate;
+
 - (instancetype)initForReadingWithData:(NSData *)data error:(NSError **)error
 {
     self = [super init];
@@ -794,15 +796,13 @@ inline int decodeIntValue(int value, const void *buffer, unsigned int *poffset) 
     return result;
 }
 
-//----- (0000000000440C40) ----------------------------------------------------
-// UINibDecoder - (bool)validateAndIndexKeys:(const void *) length:(uint64_t)
 - (bool)validateAndIndexKeys:(const void *)bytesPtr length:(NSUInteger)bytesLength
 {
     unsigned int offset = 0;
     if ( _header.keys.offset <= bytesLength ) {
         offset = _header.keys.offset;
     }
-    int keysCount = _header.keys.count;
+    unsigned int keysCount = _header.keys.count;
 
     NSInteger indexes[0x100];
     NSString *keys[0x100];

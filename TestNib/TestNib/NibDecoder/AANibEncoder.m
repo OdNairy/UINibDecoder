@@ -8,7 +8,23 @@
 
 #import "AANibEncoder.h"
 
-@implementation AANibEncoder
+@implementation AANibEncoder {
+    struct __CFDictionary *objectsToObjectIDs;
+    struct __CFDictionary *objectIDsToObjects;
+    struct __CFArray *values;
+    struct __CFSet *encodedObjects;
+    NSMutableData *data;
+    struct __CFDictionary *replacements;
+    unsigned int nextObjectID;
+    struct {
+        unsigned int currentObjectID;
+        unsigned int nextAnonymousKey;
+    } recursiveState;
+    NSMutableSet *objectsUniquedByValue;
+    struct __CFSet *objectsReplacedWithNil;
+    id delegate;
+}
+
 /*//----- (00000000004436ED) ----------------------------------------------------
 // UINibEncoder - (id)initForWritingWithMutableData:(id)
 id __cdecl -[UINibEncoder initForWritingWithMutableData:](struct UINibEncoder *self, SEL a2, id a3)

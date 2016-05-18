@@ -8,13 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AANibStringIDTable : NSObject {
-    struct AAStringIDTableBucket **table;
-    struct AAStringIDTableBucket *buckets;
-    //struct UIStringIDTableBucket { id x1; struct UIStringIDTableBucket {} *x2; } *buckets;
-    NSUInteger count;
-    NSUInteger hashMask;
-}
+@interface AANibStringIDTable : NSObject
 
 - (NSInteger)count;
 - (id)initWithKeysTransferingOwnership:(NSString * __strong *)keys count:(NSUInteger)keyCount;
