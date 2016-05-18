@@ -6,14 +6,16 @@
 //  Copyright © 2016 Intellectsoft Group. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import "AANibEncoder.h"
+#import "AANibCoderValue.h"
 
 @implementation AANibEncoder {
     struct __CFDictionary *objectsToObjectIDs;
     struct __CFDictionary *objectIDsToObjects;
     struct __CFArray *values;
     struct __CFSet *encodedObjects;
-    NSMutableData *data;
+    NSMutableData *_data;
     struct __CFDictionary *replacements;
     unsigned int nextObjectID;
     struct {
@@ -22,7 +24,7 @@
     } recursiveState;
     NSMutableSet *objectsUniquedByValue;
     struct __CFSet *objectsReplacedWithNil;
-    id delegate;
+    id delegate; //4
 }
 
 /*//----- (00000000004436ED) ----------------------------------------------------
@@ -178,13 +180,16 @@ bool __cdecl -[UINibEncoder previouslyCodedObject:](struct UINibEncoder *self, S
     return objc_msgSend_ptr(self, selRef_objectIDForObject_, a3) != 0LL;
 }
 // DBE880: using guessed type char *selRef_objectIDForObject_;
-
+*/
 //----- (0000000000443A14) ----------------------------------------------------
 // UINibEncoder - (void)appendValue:(id)
-void __cdecl -[UINibEncoder appendValue:](struct UINibEncoder *self, SEL a2, id a3)
+
+- (void)appendValue:(AANibCoderValue *)value
 {
-    CFArrayAppendValue(self->values, a3);
+    CFArrayAppendValue(self->values, (__bridge void *)value);
 }
+
+/*
 // 7E7652: using guessed type int __fastcall CFArrayAppendValue(_QWORD, _QWORD);
 // DDC810: using guessed type __int64 OBJC_IVAR___UINibEncoder_values;
 
@@ -859,38 +864,28 @@ void __cdecl -[UINibEncoder finishEncoding](struct UINibEncoder *self, SEL a2)
 // DDC800: using guessed type __int64 OBJC_IVAR___UINibEncoder_objectIDsToObjects;
 // DDC810: using guessed type __int64 OBJC_IVAR___UINibEncoder_values;
 // DDC818: using guessed type __int64 OBJC_IVAR___UINibEncoder_encodedObjects;
+*/
 
-//----- (00000000004447E9) ----------------------------------------------------
-// UINibEncoder - (unsigned int)systemVersion
-unsigned int __cdecl -[UINibEncoder systemVersion](struct UINibEncoder *self, SEL a2)
+- (unsigned int)systemVersion
 {
     return 2000;
 }
 
-//----- (00000000004447F4) ----------------------------------------------------
-// UINibEncoder - (int64_t)versionForClassName:(id)
-int64_t __cdecl -[UINibEncoder versionForClassName:](struct UINibEncoder *self, SEL a2, id a3)
+- (NSInteger)versionForClassName:(NSString *)className
 {
-    void *v3; // rax@1
-    int64_t result; // rax@2
-    
-    LODWORD(v3) = NSClassFromString(a3);
-    if ( v3 )
-        result = objc_msgSend_ptr(v3, selRef_version);
-    else
-        result = 0x7FFFFFFFFFFFFFFFLL;
-    return result;
-}
-// 7E79CA: using guessed type int __fastcall NSClassFromString(_QWORD);
-// DBE400: using guessed type char *selRef_version;
-
-//----- (0000000000444822) ----------------------------------------------------
-// UINibEncoder - (bool)allowsKeyedCoding
-bool __cdecl -[UINibEncoder allowsKeyedCoding](struct UINibEncoder *self, SEL a2)
-{
-    return 1;
+    Class classValue = NSClassFromString(className);
+    if (classValue) {
+        return [classValue version];
+    }
+    return NSNotFound;
 }
 
+- (bool)allowsKeyedCoding
+{
+    return true;
+}
+
+/*
 //----- (000000000044482A) ----------------------------------------------------
 // UINibEncoder - (void)encodeObject:(id) forKey:(id)
 void __cdecl -[UINibEncoder encodeObject:forKey:](struct UINibEncoder *self, SEL a2, id a3, id a4)
@@ -1096,852 +1091,236 @@ void __cdecl -[UINibEncoder encodeConditionalObject:forKey:](struct UINibEncoder
 // DCEBF0: using guessed type __int64 *classRef_NSString;
 // DD0720: using guessed type void *classRef_UINibCoderValue;
 // DDC830: using guessed type __int64 OBJC_IVAR___UINibEncoder_recursiveState;
-
-//----- (0000000000444BF2) ----------------------------------------------------
-// UINibEncoder - (void)encodeBool:(bool) forKey:(id)
-void __cdecl -[UINibEncoder encodeBool:forKey:](struct UINibEncoder *self, SEL a2, bool a3, id a4)
-{
-    void (__fastcall *v4)(struct UINibEncoder *, char *, void *); // r14@1
-    void *v5; // rax@1
-    
-    v4 = *objc_msgSend_ptr;
-    v5 = objc_msgSend_ptr(
-                          classRef_UINibCoderValue,
-                          selRef_nibValueForBoolean_key_scope_,
-                          a3,
-                          a4,
-                          self->recursiveState.currentObjectID);
-    v4(self, selRef_appendValue_, v5);
-}
-// DBE908: using guessed type char *selRef_appendValue_;
-// DBE920: using guessed type char *selRef_nibValueForBoolean_key_scope_;
-// DD0720: using guessed type void *classRef_UINibCoderValue;
-// DDC830: using guessed type __int64 OBJC_IVAR___UINibEncoder_recursiveState;
-
-//----- (0000000000444C38) ----------------------------------------------------
-// UINibEncoder - (void)encodeInt:(int) forKey:(id)
-void __cdecl -[UINibEncoder encodeInt:forKey:](struct UINibEncoder *self, SEL a2, int a3, id a4)
-{
-    void (__fastcall *v4)(struct UINibEncoder *, char *, void *); // r14@1
-    void *v5; // rax@1
-    
-    v4 = *objc_msgSend_ptr;
-    v5 = objc_msgSend_ptr(
-                          classRef_UINibCoderValue,
-                          selRef_nibValueForInteger_key_scope_,
-                          a3,
-                          a4,
-                          self->recursiveState.currentObjectID);
-    v4(self, selRef_appendValue_, v5);
-}
-// DBE908: using guessed type char *selRef_appendValue_;
-// DBE928: using guessed type char *selRef_nibValueForInteger_key_scope_;
-// DD0720: using guessed type void *classRef_UINibCoderValue;
-// DDC830: using guessed type __int64 OBJC_IVAR___UINibEncoder_recursiveState;
-
-//----- (0000000000444C7E) ----------------------------------------------------
-// UINibEncoder - (void)encodeInt32:(int) forKey:(id)
-void __cdecl -[UINibEncoder encodeInt32:forKey:](struct UINibEncoder *self, SEL a2, int a3, id a4)
-{
-    void (__fastcall *v4)(struct UINibEncoder *, char *, void *); // r14@1
-    void *v5; // rax@1
-    
-    v4 = *objc_msgSend_ptr;
-    v5 = objc_msgSend_ptr(
-                          classRef_UINibCoderValue,
-                          selRef_nibValueForInteger_key_scope_,
-                          a3,
-                          a4,
-                          self->recursiveState.currentObjectID);
-    v4(self, selRef_appendValue_, v5);
-}
-// DBE908: using guessed type char *selRef_appendValue_;
-// DBE928: using guessed type char *selRef_nibValueForInteger_key_scope_;
-// DD0720: using guessed type void *classRef_UINibCoderValue;
-// DDC830: using guessed type __int64 OBJC_IVAR___UINibEncoder_recursiveState;
-
-//----- (0000000000444CC4) ----------------------------------------------------
-// UINibEncoder - (void)encodeInt64:(int64_t) forKey:(id)
-void __cdecl -[UINibEncoder encodeInt64:forKey:](struct UINibEncoder *self, SEL a2, int64_t a3, id a4)
-{
-    void (__fastcall *v4)(struct UINibEncoder *, char *, void *); // r14@1
-    void *v5; // rax@1
-    
-    v4 = *objc_msgSend_ptr;
-    v5 = objc_msgSend_ptr(
-                          classRef_UINibCoderValue,
-                          selRef_nibValueForInteger_key_scope_,
-                          a3,
-                          a4,
-                          self->recursiveState.currentObjectID);
-    v4(self, selRef_appendValue_, v5);
-}
-// DBE908: using guessed type char *selRef_appendValue_;
-// DBE928: using guessed type char *selRef_nibValueForInteger_key_scope_;
-// DD0720: using guessed type void *classRef_UINibCoderValue;
-// DDC830: using guessed type __int64 OBJC_IVAR___UINibEncoder_recursiveState;
-
-//----- (0000000000444D07) ----------------------------------------------------
-// UINibEncoder - (void)encodeInteger:(int64_t) forKey:(id)
-void __cdecl -[UINibEncoder encodeInteger:forKey:](struct UINibEncoder *self, SEL a2, int64_t a3, id a4)
-{
-    void (__fastcall *v4)(struct UINibEncoder *, char *, void *); // r14@1
-    void *v5; // rax@1
-    
-    v4 = *objc_msgSend_ptr;
-    v5 = objc_msgSend_ptr(
-                          classRef_UINibCoderValue,
-                          selRef_nibValueForInteger_key_scope_,
-                          a3,
-                          a4,
-                          self->recursiveState.currentObjectID);
-    v4(self, selRef_appendValue_, v5);
-}
-// DBE908: using guessed type char *selRef_appendValue_;
-// DBE928: using guessed type char *selRef_nibValueForInteger_key_scope_;
-// DD0720: using guessed type void *classRef_UINibCoderValue;
-// DDC830: using guessed type __int64 OBJC_IVAR___UINibEncoder_recursiveState;
-
-//----- (0000000000444D4A) ----------------------------------------------------
-// UINibEncoder - (void)encodeFloat:(float) forKey:(id)
-// local variable allocation has failed, the output may be wrong!
-void __cdecl -[UINibEncoder encodeFloat:forKey:](struct UINibEncoder *self, SEL a2, float a3, id a4)
-{
-    void (__fastcall *v4)(struct UINibEncoder *, char *, void *); // r14@1
-    void *v5; // rax@1
-    
-    v4 = *objc_msgSend_ptr;
-    v5 = objc_msgSend_ptr(
-                          classRef_UINibCoderValue,
-                          selRef_nibValueForFloat_key_scope_,
-                          a4,
-                          self->recursiveState.currentObjectID,
-                          *&a3);
-    v4(self, selRef_appendValue_, v5);
-}
-// 444D4A: variables would overlap: xmm0_4.4 and xmm0_8.8
-// DBE908: using guessed type char *selRef_appendValue_;
-// DBE930: using guessed type char *selRef_nibValueForFloat_key_scope_;
-// DD0720: using guessed type void *classRef_UINibCoderValue;
-// DDC830: using guessed type __int64 OBJC_IVAR___UINibEncoder_recursiveState;
-
-//----- (0000000000444D8C) ----------------------------------------------------
-// UINibEncoder - (void)encodeDouble:(double) forKey:(id)
-void __cdecl -[UINibEncoder encodeDouble:forKey:](struct UINibEncoder *self, SEL a2, double a3, id a4)
-{
-    void (__fastcall *v4)(struct UINibEncoder *, char *, void *); // r14@1
-    void *v5; // rax@1
-    
-    v4 = *objc_msgSend_ptr;
-    v5 = objc_msgSend_ptr(
-                          classRef_UINibCoderValue,
-                          selRef_nibValueForDouble_key_scope_,
-                          a4,
-                          self->recursiveState.currentObjectID,
-                          a3);
-    v4(self, selRef_appendValue_, v5);
-}
-// DBE908: using guessed type char *selRef_appendValue_;
-// DBE938: using guessed type char *selRef_nibValueForDouble_key_scope_;
-// DD0720: using guessed type void *classRef_UINibCoderValue;
-// DDC830: using guessed type __int64 OBJC_IVAR___UINibEncoder_recursiveState;
-
-//----- (0000000000444DCE) ----------------------------------------------------
-// UINibEncoder - (void)encodeBytes:(const char *) length:(uint64_t) forKey:(id)
-void __cdecl -[UINibEncoder encodeBytes:length:forKey:](struct UINibEncoder *self, SEL a2, const char *a3, uint64_t a4, id a5)
-{
-    void (__fastcall *v5)(struct UINibEncoder *, char *, void *); // r14@1
-    void *v6; // rax@1
-    
-    v5 = *objc_msgSend_ptr;
-    v6 = objc_msgSend_ptr(
-                          classRef_UINibCoderValue,
-                          selRef_nibValueForBytes_length_key_scope_,
-                          a3,
-                          a4,
-                          a5,
-                          self->recursiveState.currentObjectID);
-    v5(self, selRef_appendValue_, v6);
-}
-// DBE908: using guessed type char *selRef_appendValue_;
-// DBE940: using guessed type char *selRef_nibValueForBytes_length_key_scope_;
-// DD0720: using guessed type void *classRef_UINibCoderValue;
-// DDC830: using guessed type __int64 OBJC_IVAR___UINibEncoder_recursiveState;
-
-//----- (0000000000444E11) ----------------------------------------------------
-// UINibEncoder - (void)encodeArrayOfDoubles:(double *) count:(int64_t) forKey:(id)
-void __cdecl -[UINibEncoder encodeArrayOfDoubles:count:forKey:](struct UINibEncoder *self, SEL a2, double *a3, int64_t a4, id a5)
-{
-    int64_t v5; // r13@1
-    double *v6; // rbx@1
-    void (*v7)(void *, const char *, ...); // r14@1
-    void *v8; // r12@1
-    int (__fastcall *v9)(void *, char *); // rbx@3
-    void *v10; // r14@3
-    __int64 v11; // rax@3
-    id v12; // [sp+10h] [bp-40h]@1
-    __int64 v13; // [sp+18h] [bp-38h]@2
-    char v14; // [sp+27h] [bp-29h]@1
-    
-    v12 = a5;
-    v5 = a4;
-    v6 = a3;
-    v7 = *objc_msgSend_ptr;
-    v8 = objc_msgSend_ptr(classRef_NSMutableData, selRef_data);
-    v14 = 7;
-    v7(v8, selRef_appendBytes_length_, &v14, 1LL);
-    if ( v5 > 0 )
-    {
-        do
-        {
-            v13 = *v6;
-            objc_msgSend_ptr(v8, selRef_appendBytes_length_, &v13, 8LL);
-            ++v6;
-            --v5;
-        }
-        while ( v5 );
-    }
-    v9 = *objc_msgSend_ptr;
-    v10 = objc_msgSend_ptr(v8, selRef_bytes);
-    LODWORD(v11) = v9(v8, selRef_length);
-    (v9)(self, selRef_encodeBytes_length_forKey_, v10, v11, v12);
-}
-// DA4148: using guessed type char *selRef_length;
-// DA5D30: using guessed type char *selRef_encodeBytes_length_forKey_;
-// DA5DA0: using guessed type char *selRef_bytes;
-// DA5DE0: using guessed type char *selRef_appendBytes_length_;
-// DA6150: using guessed type char *selRef_data;
-// DCEF90: using guessed type __int64 *classRef_NSMutableData;
-
-//----- (0000000000444EE6) ----------------------------------------------------
-// UINibEncoder - (void)encodeArrayOfFloats:(float *) count:(int64_t) forKey:(id)
-void __cdecl -[UINibEncoder encodeArrayOfFloats:count:forKey:](struct UINibEncoder *self, SEL a2, float *a3, int64_t a4, id a5)
-{
-    int64_t v5; // r13@1
-    float *v6; // rbx@1
-    void (*v7)(void *, const char *, ...); // r14@1
-    void *v8; // r12@1
-    int (__fastcall *v9)(void *, char *); // rbx@3
-    void *v10; // r14@3
-    __int64 v11; // rax@3
-    __int64 v12; // [sp+0h] [bp-40h]@1
-    __int64 v13; // [sp+8h] [bp-38h]@1
-    int v14; // [sp+10h] [bp-30h]@2
-    char v15; // [sp+17h] [bp-29h]@1
-    
-    v5 = a4;
-    v6 = a3;
-    v7 = *objc_msgSend_ptr;
-    v8 = objc_msgSend_ptr(classRef_NSMutableData, selRef_data, self, a5);
-    v15 = 6;
-    v7(v8, selRef_appendBytes_length_, &v15, 1LL);
-    if ( v5 > 0 )
-    {
-        do
-        {
-            v14 = *v6;
-            objc_msgSend_ptr(v8, selRef_appendBytes_length_, &v14, 4LL);
-            ++v6;
-            --v5;
-        }
-        while ( v5 );
-    }
-    v9 = *objc_msgSend_ptr;
-    v10 = objc_msgSend_ptr(v8, selRef_bytes);
-    LODWORD(v11) = v9(v8, selRef_length);
-    (v9)(v12, selRef_encodeBytes_length_forKey_, v10, v11, v13);
-}
-// DA4148: using guessed type char *selRef_length;
-// DA5D30: using guessed type char *selRef_encodeBytes_length_forKey_;
-// DA5DA0: using guessed type char *selRef_bytes;
-// DA5DE0: using guessed type char *selRef_appendBytes_length_;
-// DA6150: using guessed type char *selRef_data;
-// DCEF90: using guessed type __int64 *classRef_NSMutableData;
-
-//----- (0000000000444FBB) ----------------------------------------------------
-// UINibEncoder - (void)encodeArrayOfCGFloats:(double *) count:(int64_t) forKey:(id)
-void __cdecl -[UINibEncoder encodeArrayOfCGFloats:count:forKey:](struct UINibEncoder *self, SEL a2, double *a3, int64_t a4, id a5)
-{
-    objc_msgSend_ptr(self, selRef_encodeArrayOfDoubles_count_forKey_, a3, a4, a5);
-}
-// DBE948: using guessed type char *selRef_encodeArrayOfDoubles_count_forKey_;
-
-//----- (0000000000444FCD) ----------------------------------------------------
-// UINibEncoder - (void)encodeCGPoint:(struct CGPoint) forKey:(id)
-// local variable allocation has failed, the output may be wrong!
-void __cdecl -[UINibEncoder encodeCGPoint:forKey:](struct UINibEncoder *self, SEL a2, struct CGPoint a3, id a4)
-{
-    __int64 *v4; // rbx@1
-    __int64 v5; // rax@1
-    double v6; // [sp+0h] [bp-20h]@1
-    double v7; // [sp+8h] [bp-18h]@1
-    __int64 v8; // [sp+10h] [bp-10h]@1
-    
-    v4 = __stack_chk_guard_ptr;
-    v8 = *__stack_chk_guard_ptr;
-    v6 = a3.var0;
-    v7 = a3.var1;
-    objc_msgSend_ptr(self, selRef_encodeArrayOfCGFloats_count_forKey_, &v6, 2LL, a4, *&a3.var0, *&a3.var1, v8);
-    v5 = *v4;
-}
-// 444FCD: fragmented variable at xmm1_8:xmm0_8.16 may be wrong
-// B629D0: using guessed type __int64 *__stack_chk_guard_ptr;
-// DBE950: using guessed type char *selRef_encodeArrayOfCGFloats_count_forKey_;
-
-//----- (000000000044501F) ----------------------------------------------------
-// UINibEncoder - (void)encodeCGSize:(struct CGSize) forKey:(id)
-// local variable allocation has failed, the output may be wrong!
-void __cdecl -[UINibEncoder encodeCGSize:forKey:](struct UINibEncoder *self, SEL a2, struct CGSize a3, id a4)
-{
-    __int64 *v4; // rbx@1
-    __int64 v5; // rax@1
-    double v6; // [sp+0h] [bp-20h]@1
-    double v7; // [sp+8h] [bp-18h]@1
-    __int64 v8; // [sp+10h] [bp-10h]@1
-    
-    v4 = __stack_chk_guard_ptr;
-    v8 = *__stack_chk_guard_ptr;
-    v6 = a3.var0;
-    v7 = a3.var1;
-    objc_msgSend_ptr(self, selRef_encodeArrayOfCGFloats_count_forKey_, &v6, 2LL, a4, *&a3.var0, *&a3.var1, v8);
-    v5 = *v4;
-}
-// 44501F: fragmented variable at xmm1_8:xmm0_8.16 may be wrong
-// B629D0: using guessed type __int64 *__stack_chk_guard_ptr;
-// DBE950: using guessed type char *selRef_encodeArrayOfCGFloats_count_forKey_;
-
-//----- (0000000000445071) ----------------------------------------------------
-// UINibEncoder - (void)encodeCGRect:(struct CGRect) forKey:(id)
-void __cdecl -[UINibEncoder encodeCGRect:forKey:](struct UINibEncoder *self, SEL a2, struct CGRect a3, id a4)
-{
-    __int64 *v4; // rbx@1
-    __int64 v5; // rax@1
-    __m256i v6; // [sp+0h] [bp-30h]@1
-    __int64 v7; // [sp+20h] [bp-10h]@1
-    
-    v4 = __stack_chk_guard_ptr;
-    v7 = *__stack_chk_guard_ptr;
-    v6 = a3;
-    objc_msgSend_ptr(
-                     self,
-                     selRef_encodeArrayOfCGFloats_count_forKey_,
-                     &v6,
-                     4LL,
-                     a4,
-                     *&a3.var0.var0,
-                     *&a3.var0.var1,
-                     *&a3.var1.var0,
-                     *&a3.var1.var1,
-                     v7);
-    v5 = *v4;
-}
-// B629D0: using guessed type __int64 *__stack_chk_guard_ptr;
-// DBE950: using guessed type char *selRef_encodeArrayOfCGFloats_count_forKey_;
-
-//----- (00000000004450C9) ----------------------------------------------------
-// UINibEncoder - (void)encodeCGAffineTransform:(struct CGAffineTransform) forKey:(id)
-void __cdecl -[UINibEncoder encodeCGAffineTransform:forKey:](struct UINibEncoder *self, SEL a2, struct CGAffineTransform a3, id a4)
-{
-    __int64 *v4; // rbx@1
-    __int64 v5; // rax@1
-    char v6[48]; // [sp+0h] [bp-40h]@1
-    __int64 v7; // [sp+30h] [bp-10h]@1
-    
-    v4 = __stack_chk_guard_ptr;
-    v7 = *__stack_chk_guard_ptr;
-    *v6 = a3;
-    objc_msgSend_ptr(
-                     self,
-                     selRef_encodeArrayOfCGFloats_count_forKey_,
-                     v6,
-                     6LL,
-                     a4,
-                     *&a3.var0,
-                     *&a3.var1,
-                     *&a3.var2,
-                     *&a3.var3,
-                     *&a3.var4,
-                     *&a3.var5,
-                     v7);
-    v5 = *v4;
-}
-// B629D0: using guessed type __int64 *__stack_chk_guard_ptr;
-// DBE950: using guessed type char *selRef_encodeArrayOfCGFloats_count_forKey_;
-
-//----- (0000000000445129) ----------------------------------------------------
-// UINibEncoder - (void)encodeUIEdgeInsets:(struct UIEdgeInsets) forKey:(id)
-void __cdecl -[UINibEncoder encodeUIEdgeInsets:forKey:](struct UINibEncoder *self, SEL a2, struct UIEdgeInsets a3, id a4)
-{
-    __int64 *v4; // rbx@1
-    __int64 v5; // rax@1
-    __m256i v6; // [sp+0h] [bp-30h]@1
-    __int64 v7; // [sp+20h] [bp-10h]@1
-    
-    v4 = __stack_chk_guard_ptr;
-    v7 = *__stack_chk_guard_ptr;
-    v6 = a3;
-    objc_msgSend_ptr(
-                     self,
-                     selRef_encodeArrayOfCGFloats_count_forKey_,
-                     &v6,
-                     4LL,
-                     a4,
-                     *&a3.var0,
-                     *&a3.var1,
-                     *&a3.var2,
-                     *&a3.var3,
-                     v7);
-    v5 = *v4;
-}
-// B629D0: using guessed type __int64 *__stack_chk_guard_ptr;
-// DBE950: using guessed type char *selRef_encodeArrayOfCGFloats_count_forKey_;
-
-//----- (0000000000445181) ----------------------------------------------------
-// UINibEncoder - (id)nextGenericKey
-id __cdecl -[UINibEncoder nextGenericKey](struct UINibEncoder *self, SEL a2)
-{
-    ++self->recursiveState.nextAnonymousKey;
-    return objc_msgSend_ptr(classRef_NSString, selRef_stringWithFormat_, &cfstr_Ld_3);
-}
-// BC6030: using guessed type __CFString cfstr_Ld_3;
-// DA3558: using guessed type char *selRef_stringWithFormat_;
-// DCEBF0: using guessed type __int64 *classRef_NSString;
-// DDC830: using guessed type __int64 OBJC_IVAR___UINibEncoder_recursiveState;
-
-//----- (00000000004451B8) ----------------------------------------------------
-// UINibEncoder - (void)encodeObject:(id)
-void __cdecl -[UINibEncoder encodeObject:](struct UINibEncoder *self, SEL a2, id a3)
-{
-    __int64 v3; // rax@0
-    id v4; // r14@1
-    void (__fastcall *v5)(struct UINibEncoder *, char *, id, void *); // r15@1
-    void *v6; // rax@1
-    
-    v4 = a3;
-    v5 = *objc_msgSend_ptr;
-    v6 = objc_msgSend_ptr(self, selRef_nextGenericKey, v3);
-    v5(self, selRef_encodeObject_forKey_, v4, v6);
-}
-// DA3670: using guessed type char *selRef_encodeObject_forKey_;
-// DBE848: using guessed type char *selRef_nextGenericKey;
-
-//----- (00000000004451F8) ----------------------------------------------------
-// UINibEncoder - (void)encodeRootObject:(id)
-void __cdecl -[UINibEncoder encodeRootObject:](struct UINibEncoder *self, SEL a2, id a3)
-{
-    __int64 v3; // rax@0
-    id v4; // r14@1
-    void (__fastcall *v5)(struct UINibEncoder *, char *, id, void *); // r15@1
-    void *v6; // rax@1
-    
-    v4 = a3;
-    v5 = *objc_msgSend_ptr;
-    v6 = objc_msgSend_ptr(self, selRef_nextGenericKey, v3);
-    v5(self, selRef_encodeObject_forKey_, v4, v6);
-}
-// DA3670: using guessed type char *selRef_encodeObject_forKey_;
-// DBE848: using guessed type char *selRef_nextGenericKey;
-
-//----- (0000000000445238) ----------------------------------------------------
-// UINibEncoder - (void)encodeBycopyObject:(id)
-void __cdecl -[UINibEncoder encodeBycopyObject:](struct UINibEncoder *self, SEL a2, id a3)
-{
-    __int64 v3; // rax@0
-    id v4; // r14@1
-    void (__fastcall *v5)(struct UINibEncoder *, char *, id, void *); // r15@1
-    void *v6; // rax@1
-    
-    v4 = a3;
-    v5 = *objc_msgSend_ptr;
-    v6 = objc_msgSend_ptr(self, selRef_nextGenericKey, v3);
-    v5(self, selRef_encodeObject_forKey_, v4, v6);
-}
-// DA3670: using guessed type char *selRef_encodeObject_forKey_;
-// DBE848: using guessed type char *selRef_nextGenericKey;
-
-//----- (0000000000445278) ----------------------------------------------------
-// UINibEncoder - (void)encodeByrefObject:(id)
-void __cdecl -[UINibEncoder encodeByrefObject:](struct UINibEncoder *self, SEL a2, id a3)
-{
-    __int64 v3; // rax@0
-    id v4; // r14@1
-    void (__fastcall *v5)(struct UINibEncoder *, char *, id, void *); // r15@1
-    void *v6; // rax@1
-    
-    v4 = a3;
-    v5 = *objc_msgSend_ptr;
-    v6 = objc_msgSend_ptr(self, selRef_nextGenericKey, v3);
-    v5(self, selRef_encodeObject_forKey_, v4, v6);
-}
-// DA3670: using guessed type char *selRef_encodeObject_forKey_;
-// DBE848: using guessed type char *selRef_nextGenericKey;
-
-//----- (00000000004452B8) ----------------------------------------------------
-// UINibEncoder - (void)encodeConditionalObject:(id)
-void __cdecl -[UINibEncoder encodeConditionalObject:](struct UINibEncoder *self, SEL a2, id a3)
-{
-    __int64 v3; // rax@0
-    id v4; // r14@1
-    void (__fastcall *v5)(struct UINibEncoder *, char *, id, void *); // r15@1
-    void *v6; // rax@1
-    
-    v4 = a3;
-    v5 = *objc_msgSend_ptr;
-    v6 = objc_msgSend_ptr(self, selRef_nextGenericKey, v3);
-    v5(self, selRef_encodeConditionalObject_forKey_, v4, v6);
-}
-// DA6768: using guessed type char *selRef_encodeConditionalObject_forKey_;
-// DBE848: using guessed type char *selRef_nextGenericKey;
-
-//----- (00000000004452F8) ----------------------------------------------------
-// UINibEncoder - (void)encodeValuesOfObjCTypes:(const char *)
-void __cdecl -[UINibEncoder encodeValuesOfObjCTypes:](struct UINibEncoder *self, SEL a2, const char *a3)
-{
-    void *(*v3)(void *, const char *, ...); // r13@1
-    void *v4; // r12@1
-    void *v5; // rax@1
-    
-    v3 = *objc_msgSend_ptr;
-    v4 = objc_msgSend_ptr(classRef_NSAssertionHandler, selRef_currentHandler, a3);
-    v5 = v3(classRef_NSString, selRef_stringWithUTF8String_, "/SourceCache/UIKit_Sim/UIKit-3318.16.14/UINibEncoder.m");
-    v3(v4, selRef_handleFailureInMethod_object_file_lineNumber_description_, a2, self, v5, 456LL, &stru_B9FBB0);
-}
-// B9FBB0: using guessed type __CFString stru_B9FBB0;
-// DA3538: using guessed type char *selRef_currentHandler;
-// DA3540: using guessed type char *selRef_stringWithUTF8String_;
-// DA3548: using guessed type char *selRef_handleFailureInMethod_object_file_lineNumber_description_;
-// DCEBE8: using guessed type __int64 *classRef_NSAssertionHandler;
-// DCEBF0: using guessed type __int64 *classRef_NSString;
-
-//----- (00000000004453C5) ----------------------------------------------------
-// UINibEncoder - (void)encodeArrayOfObjCType:(const char *) count:(uint64_t) at:(const void *)
-void __cdecl -[UINibEncoder encodeArrayOfObjCType:count:at:](struct UINibEncoder *self, SEL a2, const char *a3, uint64_t a4, const void *a5)
-{
-    __int64 v5; // rax@0
-    void *(*v6)(void *, const char *, ...); // r13@1
-    void *v7; // r12@1
-    void *v8; // rax@1
-    
-    v6 = *objc_msgSend_ptr;
-    v7 = objc_msgSend_ptr(classRef_NSAssertionHandler, selRef_currentHandler, a3, a4, a5, v5);
-    v8 = v6(classRef_NSString, selRef_stringWithUTF8String_, "/SourceCache/UIKit_Sim/UIKit-3318.16.14/UINibEncoder.m");
-    v6(v7, selRef_handleFailureInMethod_object_file_lineNumber_description_, a2, self, v8, 460LL, &stru_B9FBB0);
-}
-// B9FBB0: using guessed type __CFString stru_B9FBB0;
-// DA3538: using guessed type char *selRef_currentHandler;
-// DA3540: using guessed type char *selRef_stringWithUTF8String_;
-// DA3548: using guessed type char *selRef_handleFailureInMethod_object_file_lineNumber_description_;
-// DCEBE8: using guessed type __int64 *classRef_NSAssertionHandler;
-// DCEBF0: using guessed type __int64 *classRef_NSString;
-
-//----- (0000000000445447) ----------------------------------------------------
-// UINibEncoder - (void)encodeBytes:(const void *) length:(uint64_t)
-void __cdecl -[UINibEncoder encodeBytes:length:](struct UINibEncoder *self, SEL a2, const void *a3, uint64_t a4)
-{
-    uint64_t v4; // r14@1
-    const void *v5; // r15@1
-    void (__fastcall *v6)(struct UINibEncoder *, char *, const void *, uint64_t, void *); // r12@1
-    void *v7; // rax@1
-    
-    v4 = a4;
-    v5 = a3;
-    v6 = *objc_msgSend_ptr;
-    v7 = objc_msgSend_ptr(self, selRef_nextGenericKey);
-    v6(self, selRef_encodeBytes_length_forKey_, v5, v4, v7);
-}
-// DA5D30: using guessed type char *selRef_encodeBytes_length_forKey_;
-// DBE848: using guessed type char *selRef_nextGenericKey;
-
-//----- (000000000044548C) ----------------------------------------------------
-// UINibEncoder - (void)encodeValueOfObjCType:(const char *) at:(const void *)
-void __cdecl -[UINibEncoder encodeValueOfObjCType:at:](struct UINibEncoder *self, SEL a2, const char *a3, const void *a4)
-{
-    const char **v4; // r15@1
-    const char *v5; // rbx@1
-    signed int v6; // eax@2
-    const char *v7; // rbx@4
-    size_t v8; // r15@4
-    void (__fastcall *v9)(struct UINibEncoder *, char *, const char *, size_t, void *); // r12@4
-    void *v10; // rax@4
-    const char *v11; // rbx@8
-    double v12; // xmm0_8@12
-    const char *v13; // rax@15
-    void (__fastcall *v14)(struct UINibEncoder *, char *, const char *, void *); // r15@16
-    void *v15; // rax@16
-    char *v16; // rsi@16
-    unsigned int v17; // ebx@18
-    void (__fastcall *v18)(struct UINibEncoder *, char *, _QWORD, void *); // r15@18
-    void *v19; // rax@18
-    const char *v20; // xmm0_8@21
-    void (__fastcall *v21)(struct UINibEncoder *, char *, void *); // rbx@22
-    void *v22; // rax@22
-    
-    v4 = a4;
-    v5 = a3;
-    if ( strlen(a3) != 1 )
-        return;
-    v6 = *v5;
-    if ( v6 <= 57 )
-    {
-        if ( v6 == 42 )
-        {
-            v7 = *v4;
-            v8 = strlen(*v4) + 1;
-            v9 = *objc_msgSend_ptr;
-            v10 = objc_msgSend_ptr(self, selRef_nextGenericKey);
-            v9(self, selRef_encodeBytes_length_forKey_, v7, v8, v10);
-        }
-        return;
-    }
-    v6 = v6;
-    if ( v6 > 99 )
-    {
-        if ( v6 > 112 )
-        {
-            if ( v6 == 113 )
-            {
-                v11 = *v4;
-            }
-            else
-            {
-                if ( v6 != 115 )
-                    return;
-                v11 = *v4;
-            }
-        }
-        else
-        {
-            if ( v6 == 100 )
-            {
-                v20 = *v4;
-                goto LABEL_22;
-            }
-            if ( v6 == 102 )
-            {
-                v12 = *v4;
-            LABEL_22:
-                v21 = *objc_msgSend_ptr;
-                v22 = objc_msgSend_ptr(self, selRef_nextGenericKey);
-                v21(self, selRef_encodeDouble_forKey_, v22);
-                return;
-            }
-            if ( v6 != 105 )
-                return;
-            v11 = *v4;
-        }
-        v14 = *objc_msgSend_ptr;
-        v15 = objc_msgSend_ptr(self, selRef_nextGenericKey);
-        v16 = selRef_encodeInteger_forKey_;
-        goto LABEL_26;
-    }
-    if ( v6 == 58 )
-    {
-        LODWORD(v13) = NSStringFromSelector(*v4);
-        v11 = v13;
-        goto LABEL_16;
-    }
-    if ( v6 == 64 )
-    {
-        v11 = *v4;
-    LABEL_16:
-        v14 = *objc_msgSend_ptr;
-        v15 = objc_msgSend_ptr(self, selRef_nextGenericKey);
-        v16 = selRef_encodeObject_forKey_;
-    LABEL_26:
-        v14(self, v16, v11, v15);
-        return;
-    }
-    if ( v6 == 66 )
-    {
-        v17 = *v4;
-        v18 = *objc_msgSend_ptr;
-        v19 = objc_msgSend_ptr(self, selRef_nextGenericKey);
-        v18(self, selRef_encodeBool_forKey_, v17, v19);
-    }
-}
-// 7E7A66: using guessed type int __fastcall NSStringFromSelector(_QWORD);
-// DA3670: using guessed type char *selRef_encodeObject_forKey_;
-// DA3678: using guessed type char *selRef_encodeBool_forKey_;
-// DA5D28: using guessed type char *selRef_encodeInteger_forKey_;
-// DA5D30: using guessed type char *selRef_encodeBytes_length_forKey_;
-// DAEE20: using guessed type char *selRef_encodeDouble_forKey_;
-// DBE848: using guessed type char *selRef_nextGenericKey;
-
-//----- (000000000044565E) ----------------------------------------------------
-// UINibEncoder - (id)delegate
-id __cdecl -[UINibEncoder delegate](struct UINibEncoder *self, SEL a2)
-{
-    return *(&self->delegate + 4);
-}
-
-//----- (000000000044566F) ----------------------------------------------------
-// UINibEncoder - (void)setDelegate:(id)
-void __cdecl -[UINibEncoder setDelegate:](struct UINibEncoder *self, SEL a2, id a3)
-{
-    *(&self->delegate + 4) = a3;
-}
-
-//----- (0000000000445680) ----------------------------------------------------
-// UINibStringIDTable - (id)initWithKeysTransferingOwnership:(id *) count:(uint64_t) 
-id __cdecl -[UINibStringIDTable initWithKeysTransferingOwnership:count:](struct UINibStringIDTable *self, SEL a2, id *a3, uint64_t a4)
-{
-    uint64_t v4; // r15@1
-    id *v5; // rbx@1
-    struct objc_object *v6; // r12@1
-    id *v7; // r14@2
-    signed __int64 v8; // rcx@2
-    size_t v9; // rbx@3
-    __int64 v10; // r15@5
-    void *v11; // rbx@5
-    char *v12; // r13@6
-    void *v13; // rax@6
-    unsigned __int64 v14; // rax@6
-    struct UINibStringIDTable *v16; // [sp+8h] [bp-38h]@1
-    void *v17; // [sp+10h] [bp-30h]@1
-    
-    v4 = a4;
-    v5 = a3;
-    v16 = self;
-    v17 = classRef_UINibStringIDTable_0;
-    v6 = objc_msgSendSuper2(&v16, selRef_init);
-    if ( v6 )
-    {
-        v7 = v5;
-        v8 = 2LL;
-        do
-        {
-            v9 = v8;
-            v8 *= 2LL;
-        }
-        while ( v9 <= 2 * v4 );
-        v6[1].isa = calloc(8uLL, v9);
-        v6[2].isa = malloc(24 * v4);
-        v6[3].isa = (v9 - 1);
-        v6[4].isa = v4;
-        if ( v4 )
-        {
-            v10 = 0LL;
-            v11 = 0LL;
-            do
-            {
-                v12 = v6[2].isa;
-                v13 = objc_msgSend_ptr(v7[v11], selRef_hash);
-                *&v12[v10 + 8] = v13;
-                *&v12[v10] = v7[v11];
-                v14 = v6[3].isa & v13;
-                *&v12[v10 + 16] = *(v6[1].isa + v14);
-                *(v6[1].isa + v14) = &v12[v10];
-                v11 = v11 + 1;
-                v10 += 24LL;
-            }
-            while ( v11 < v6[4].isa );
-        }
-    }
-    return v6;
-}
-// DA37F0: using guessed type char *selRef_init;
-// DA6148: using guessed type char *selRef_hash;
-// DD2B58: using guessed type void *classRef_UINibStringIDTable_0;
-// DDC848: using guessed type __int64 OBJC_IVAR___UINibStringIDTable_table;
-// DDC850: using guessed type __int64 OBJC_IVAR___UINibStringIDTable_buckets;
-// DDC858: using guessed type __int64 OBJC_IVAR___UINibStringIDTable_hashMask;
-// DDC860: using guessed type __int64 OBJC_IVAR___UINibStringIDTable_count;
-
-//----- (00000000004457CA) ----------------------------------------------------
-// UINibStringIDTable - (void)dealloc
-void __cdecl -[UINibStringIDTable dealloc](struct UINibStringIDTable *self, SEL a2)
-{
-    signed __int64 v2; // rax@1
-    __int64 v3; // rbx@2
-    unsigned __int64 v4; // r15@2
-    signed __int64 v5; // r12@3
-    struct UINibStringIDTable *v6; // [sp+8h] [bp-38h]@4
-    void *v7; // [sp+10h] [bp-30h]@4
-    
-    v2 = 32LL;
-    if ( self->count )
-    {
-        v3 = 0LL;
-        v4 = 0LL;
-        do
-        {
-            v5 = v2;
-            objc_msgSend_ptr(self->buckets[v3].var0, selRef_release);
-            v2 = v5;
-            ++v4;
-            ++v3;
-        }
-        while ( v4 < *&self->NSObject_opaque[v5] );
-    }
-    free(self->table);
-    free(self->buckets);
-    v6 = self;
-    v7 = classRef_UINibStringIDTable_0;
-    objc_msgSendSuper2(&v6, selRef_dealloc);
-}
-// DA3380: using guessed type char *selRef_release;
-// DA3508: using guessed type char *selRef_dealloc;
-// DD2B58: using guessed type void *classRef_UINibStringIDTable_0;
-// DDC848: using guessed type __int64 OBJC_IVAR___UINibStringIDTable_table;
-// DDC850: using guessed type __int64 OBJC_IVAR___UINibStringIDTable_buckets;
-// DDC860: using guessed type __int64 OBJC_IVAR___UINibStringIDTable_count;
-
-//----- (0000000000445876) ----------------------------------------------------
-// UINibStringIDTable - (bool)lookupKey:(id) identifier:(int64_t *) 
-bool __cdecl -[UINibStringIDTable lookupKey:identifier:](struct UINibStringIDTable *self, SEL a2, id a3, int64_t *a4)
-{
-    __int64 v4; // rax@0
-    int64_t *v5; // r13@1
-    id v6; // r12@1
-    void *v7; // rbx@1
-    struct UIStringIDTableBucket *v8; // r14@1
-    bool v9; // bl@7
-    void *(*v10)(void *, const char *, ...); // r15@9
-    int64_t *v12; // [sp+0h] [bp-30h]@2
-    
-    v5 = a4;
-    v6 = a3;
-    v7 = objc_msgSend_ptr(a3, selRef_hash, v4);
-    v8 = self->table[v7 & self->hashMask];
-    if ( v8 )
-    {
-        v12 = v5;
-        while ( v8->var1 != v7 || v8->var0 != v6 && !objc_msgSend_ptr(v8->var0, selRef_isEqualToString_, v6, v12) )
-        {
-            v8 = v8->var2;
-            if ( !v8 )
-                goto LABEL_7;
-        }
-        *v12 = 0xAAAAAAAAAAAAAAABLL * ((v8 - self->buckets) >> 3);
-        v9 = 1;
-        if ( v8->var0 != v6 )
-        {
-            v10 = *objc_msgSend_ptr;
-            objc_msgSend_ptr(v8->var0, selRef_release, v12);
-            v8->var0 = v10(v6, selRef_copy);
-        }
-    }
-    else
-    {
-    LABEL_7:
-        v9 = 0;
-    }
-    return v9;
-}
-// DA3380: using guessed type char *selRef_release;
-// DA3418: using guessed type char *selRef_isEqualToString_;
-// DA38B0: using guessed type char *selRef_copy;
-// DA6148: using guessed type char *selRef_hash;
-// DDC848: using guessed type __int64 OBJC_IVAR___UINibStringIDTable_table;
-// DDC850: using guessed type __int64 OBJC_IVAR___UINibStringIDTable_buckets;
-// DDC858: using guessed type __int64 OBJC_IVAR___UINibStringIDTable_hashMask;
-
-//----- (000000000044595B) ----------------------------------------------------
-// UINibStringIDTable - (int64_t)count
-int64_t __cdecl -[UINibStringIDTable count](struct UINibStringIDTable *self, SEL a2)
-{
-    return self->count;
-}
-// DDC860: using guessed type __int64 OBJC_IVAR___UINibStringIDTable_count;
 */
+
+- (void)encodeBool:(BOOL)boolv forKey:(NSString *)key
+{
+    AANibCoderValue *value = [AANibCoderValue nibValueForBoolean:boolv key:key scope:self->recursiveState.currentObjectID];
+    [self appendValue:value];
+}
+
+- (void)encodeInt:(int)intv forKey:(NSString *)key
+{
+    AANibCoderValue *value = [AANibCoderValue nibValueForInteger:intv key:key scope:self->recursiveState.currentObjectID];
+    [self appendValue:value];
+}
+
+- (void)encodeInt32:(int32_t)intv forKey:(NSString *)key
+{
+    AANibCoderValue *value = [AANibCoderValue nibValueForInt32:intv key:key scope:self->recursiveState.currentObjectID];
+    [self appendValue:value];
+}
+
+- (void)encodeInt64:(int64_t)intv forKey:(NSString *)key
+{
+    AANibCoderValue *value = [AANibCoderValue nibValueForInt64:intv key:key scope:self->recursiveState.currentObjectID];
+    [self appendValue:value];
+}
+
+- (void)encodeInteger:(NSInteger)intv forKey:(NSString *)key
+{
+    AANibCoderValue *value = [AANibCoderValue nibValueForInteger:intv key:key scope:self->recursiveState.currentObjectID];
+    [self appendValue:value];
+}
+
+- (void)encodeFloat:(float)realv forKey:(NSString *)key
+{
+    AANibCoderValue *value = [AANibCoderValue nibValueForFloat:realv key:key scope:self->recursiveState.currentObjectID];
+    [self appendValue:value];
+}
+
+- (void)encodeDouble:(double)realv forKey:(NSString *)key
+{
+    AANibCoderValue *value = [AANibCoderValue nibValueForDouble:realv key:key scope:self->recursiveState.currentObjectID];
+    [self appendValue:value];
+}
+
+- (void)encodeBytes:(const uint8_t *)bytesp length:(NSUInteger)lenv forKey:(NSString *)key
+{
+    AANibCoderValue *value = [AANibCoderValue nibValueForBytes:bytesp length:lenv key:key scope:self->recursiveState.currentObjectID];
+    [self appendValue:value];
+}
+
+- (void)encodeArrayOfDoubles:(double *)doubles count:(NSInteger)count forKey:(NSString *)key
+{
+    NSMutableData *data = [NSMutableData data];
+    char type = 7;
+    [data appendBytes:&type length:1];
+    for (NSInteger i = 0; i < count; i++, doubles++) {
+        [data appendBytes:doubles length:sizeof(double)];
+    }
+    [self encodeBytes:[data bytes] length:[data length] forKey:key];
+}
+
+- (void)encodeArrayOfFloats:(float *)floats count:(NSInteger)count forKey:(NSString *)key
+{
+    NSMutableData *data = [NSMutableData data];
+    char type = 6;
+    [data appendBytes:&type length:1];
+    for (NSInteger i = 0; i < count; i++, floats++) {
+        [data appendBytes:floats length:sizeof(float)];
+    }
+    [self encodeBytes:[data bytes] length:[data length] forKey:key];
+}
+
+- (void)encodeArrayOfCGFloats:(CGFloat *)floats count:(NSInteger)count forKey:(NSString *)key
+{
+    //ARMv64 only?
+    [self encodeArrayOfDoubles:floats count:count forKey:key];
+}
+
+- (void)encodeCGPoint:(CGPoint)point forKey:(NSString *)key
+{
+    [self encodeArrayOfCGFloats:(CGFloat *)&point.x count:2 forKey:key];
+}
+
+- (void)encodeCGSize:(CGSize)size forKey:(NSString *)key
+{
+    [self encodeArrayOfCGFloats:(CGFloat *)&size.width count:2 forKey:key];
+}
+
+- (void)encodeCGRect:(CGRect)rect forKey:(NSString *)key
+{
+    [self encodeArrayOfCGFloats:(CGFloat *)&rect.origin.x count:4 forKey:key];
+}
+
+- (void)encodeCGAffineTransform:(CGAffineTransform)transform forKey:(NSString *)key
+{
+    [self encodeArrayOfCGFloats:(CGFloat *)&transform.a count:6 forKey:key];
+}
+
+- (void)encodeUIEdgeInsets:(UIEdgeInsets)insets forKey:(NSString *)key
+{
+    [self encodeArrayOfCGFloats:(CGFloat *)&insets count:4 forKey:key];
+}
+
+- (NSString *)nextGenericKey {
+    self->recursiveState.nextAnonymousKey++;
+    return [NSString stringWithFormat:@"$%ld", self->recursiveState.nextAnonymousKey];
+}
+
+- (void)encodeObject:(id)object
+{
+    NSString *key = [self nextGenericKey];
+    [self encodeObject:object forKey:key];
+}
+
+- (void)encodeRootObject:(id)rootObject
+{
+    NSString *key = [self nextGenericKey];
+    [self encodeObject:rootObject forKey:key];
+}
+
+- (void)encodeBycopyObject:(id)anObject
+{
+    NSString *key = [self nextGenericKey];
+    [self encodeObject:anObject forKey:key];
+}
+
+- (void)encodeByrefObject:(id)anObject
+{
+    NSString *key = [self nextGenericKey];
+    [self encodeObject:anObject forKey:key];
+}
+
+- (void)encodeConditionalObject:(id)object
+{
+    NSString *key = [self nextGenericKey];
+    [self encodeConditionalObject:object forKey:key];
+}
+
+- (void)encodeValuesOfObjCTypes:(const char *)types, ...
+{
+    NSAssert(NO, @""); //unknown stru_B9FBB0
+}
+
+- (void)encodeArrayOfObjCType:(const char *)type count:(NSUInteger)count at:(const void *)array
+{
+    NSAssert(NO, @""); //unknown stru_B9FBB0
+}
+
+- (void)encodeBytes:(const void *)byteaddr length:(NSUInteger)length
+{
+    NSString *key = [self nextGenericKey];
+    [self encodeBytes:byteaddr length:length forKey:key];
+}
+
+- (void)encodeValueOfObjCType:(const char *)typeptr at:(const void *)addr
+{
+    if (strlen(typeptr) != 1) {
+        return;
+    }
+    
+    //should be switch
+    char type = *typeptr;
+    if (type <= 57) {
+        if (type == 42) {
+            NSString *key = [self nextGenericKey];
+            uint8_t *data = *(uint8_t **)addr; //TODO: check??
+            [self encodeBytes:data length:strlen((char *)data) + 1 forKey:key];
+        }
+        return;
+    }
+    if (type > 99) {
+        NSInteger intValue;
+        if (type > 112) {
+            if (type == 113) {
+                intValue = *(NSInteger *)addr; //TODO: check
+            }
+            else if (type != 115) {
+                return;
+            }
+            intValue = *(NSInteger *)addr; //TODO: check
+        }
+        else {
+            if (type == 100) {
+                NSString *key = [self nextGenericKey];
+                double doubleValue = *(double*)addr; //TODO: check??
+                [self encodeDouble:doubleValue forKey:key];
+                return;
+            }
+            if (type == 102) {
+                NSString *key = [self nextGenericKey];
+                double doubleValue = *(double*)addr; //TODO: check??
+                [self encodeDouble:doubleValue forKey:key];
+                return;
+            }
+            if (type != 105) {
+                return;
+            }
+            intValue = *(NSInteger *)addr; //TODO: check
+        }
+        NSString *key = [self nextGenericKey];
+        [self encodeInteger:intValue forKey:key];
+    }
+    if (type == 58) {
+        NSString *str = NSStringFromSelector(*(SEL *)addr);
+        NSString *key = [self nextGenericKey];
+        [self encodeObject:str forKey:key];
+        return;
+    }
+    if (type == 64) {
+        id object = *(id __unsafe_unretained *)addr;
+        NSString *key = [self nextGenericKey];
+        [self encodeObject:object forKey:key];
+        return;
+    }
+    if (type == 66) {
+        BOOL boolValue = *(BOOL*)addr;
+        NSString *key = [self nextGenericKey];
+        [self encodeBool:boolValue forKey:key];
+        return;
+    }
+}
+
+- (id)delegate
+{
+    return self->delegate;
+}
+
+- (void)setDelegate:(id)aDelegate
+{
+    self->delegate = aDelegate;
+}
+
 @end

@@ -12,7 +12,7 @@ unsigned long AAFixedByteLengthForType_table[11] = { 1LL, 2LL, 4LL, 8LL, 0LL, 0L
 
 @implementation AANibCoderValue
 
-+ (id)nibValueForObjectReference:(long long)reference key:(NSString *)key scope:(unsigned int)scope
++ (instancetype)nibValueForObjectReference:(long long)reference key:(NSString *)key scope:(unsigned int)scope
 {
     AANibCoderValue *value = [[AANibCoderValue alloc] init];
     value->key = [key copy];
@@ -22,7 +22,7 @@ unsigned long AAFixedByteLengthForType_table[11] = { 1LL, 2LL, 4LL, 8LL, 0LL, 0L
     return value;
 }
 
-+ (id)nibValueForInt8:(unsigned char)int8Value key:(NSString *)key scope:(unsigned int)scope
++ (instancetype)nibValueForInt8:(unsigned char)int8Value key:(NSString *)key scope:(unsigned int)scope
 {
     AANibCoderValue *value = [AANibCoderValue new];
     value->key = [key copy];
@@ -32,7 +32,7 @@ unsigned long AAFixedByteLengthForType_table[11] = { 1LL, 2LL, 4LL, 8LL, 0LL, 0L
     return value;
 }
 
-+ (id)nibValueForInt16:(unsigned short)int16Value key:(NSString *)key scope:(unsigned int)scope
++ (instancetype)nibValueForInt16:(unsigned short)int16Value key:(NSString *)key scope:(unsigned int)scope
 {
     AANibCoderValue *value = [AANibCoderValue new];
     value->key = [key copy];
@@ -42,7 +42,7 @@ unsigned long AAFixedByteLengthForType_table[11] = { 1LL, 2LL, 4LL, 8LL, 0LL, 0L
     return value;
 }
 
-+ (id)nibValueForInt32:(unsigned int)int32Value key:(NSString *)key scope:(unsigned int)scope
++ (instancetype)nibValueForInt32:(unsigned int)int32Value key:(NSString *)key scope:(unsigned int)scope
 {
     AANibCoderValue *value = [AANibCoderValue new];
     value->key = [key copy];
@@ -52,7 +52,7 @@ unsigned long AAFixedByteLengthForType_table[11] = { 1LL, 2LL, 4LL, 8LL, 0LL, 0L
     return value;
 }
 
-+ (id)nibValueForInt64:(uint64_t)int64value key:(NSString *)key scope:(unsigned int)scope
++ (instancetype)nibValueForInt64:(uint64_t)int64value key:(NSString *)key scope:(unsigned int)scope
 {
     AANibCoderValue *value = [AANibCoderValue new];
     value->key = [key copy];
@@ -62,7 +62,7 @@ unsigned long AAFixedByteLengthForType_table[11] = { 1LL, 2LL, 4LL, 8LL, 0LL, 0L
     return value;
 }
 
-+ (id)nibValueForInteger:(NSUInteger)integerValue key:(NSString *)key scope:(unsigned int)scope
++ (instancetype)nibValueForInteger:(NSUInteger)integerValue key:(NSString *)key scope:(unsigned int)scope
 {
     if (integerValue > 0x7F) {
         if (integerValue > 0x7FFF) {
@@ -76,7 +76,7 @@ unsigned long AAFixedByteLengthForType_table[11] = { 1LL, 2LL, 4LL, 8LL, 0LL, 0L
     return [self nibValueForInt8:integerValue key:key scope:scope];
 }
 
-+ (id)nibValueForBoolean:(BOOL)boolValue key:(NSString *)key scope:(unsigned int)scope
++ (instancetype)nibValueForBoolean:(BOOL)boolValue key:(NSString *)key scope:(unsigned int)scope
 {
     AANibCoderValue *value = [AANibCoderValue new];
     value->key = [key copy];
@@ -86,7 +86,7 @@ unsigned long AAFixedByteLengthForType_table[11] = { 1LL, 2LL, 4LL, 8LL, 0LL, 0L
     return value;
 }
 
-+ (id)nibValueForDouble:(double)doubleValue key:(NSString *)key scope:(unsigned int)scope
++ (instancetype)nibValueForDouble:(double)doubleValue key:(NSString *)key scope:(unsigned int)scope
 {
     AANibCoderValue *value = [AANibCoderValue new];
     value->key = [key copy];
@@ -96,7 +96,7 @@ unsigned long AAFixedByteLengthForType_table[11] = { 1LL, 2LL, 4LL, 8LL, 0LL, 0L
     return value;
 }
 
-+ (id)nibValueForFloat:(float)floatValue key:(NSString *)key scope:(unsigned int)scope
++ (instancetype)nibValueForFloat:(float)floatValue key:(NSString *)key scope:(unsigned int)scope
 {
     AANibCoderValue *value = [AANibCoderValue new];
     value->key = [key copy];
@@ -106,7 +106,7 @@ unsigned long AAFixedByteLengthForType_table[11] = { 1LL, 2LL, 4LL, 8LL, 0LL, 0L
     return value;
 }
 
-+ (id)nibValueForBytes:(const void*)bytes length:(unsigned long)length key:(NSString *)key scope:(unsigned int)scope
++ (instancetype)nibValueForBytes:(const void*)bytes length:(unsigned long)length key:(NSString *)key scope:(unsigned int)scope
 {
     void *copyBytes = malloc(length);
     memcpy(copyBytes, bytes, length);
@@ -120,7 +120,7 @@ unsigned long AAFixedByteLengthForType_table[11] = { 1LL, 2LL, 4LL, 8LL, 0LL, 0L
     return value;
 }
 
-+ (id)nibValueRepresentingNilReferenceForKey:(NSString *)key scope:(unsigned int)scope
++ (instancetype)nibValueRepresentingNilReferenceForKey:(NSString *)key scope:(unsigned int)scope
 {
     AANibCoderValue *value = [AANibCoderValue new];
     value->key = [key copy];
